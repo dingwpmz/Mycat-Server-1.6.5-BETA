@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE mycat:schema SYSTEM "schema.dtd">
+<mycat:schema xmlns:mycat="http://io.mycat/">
+
+	<schema name="TESTDB" checkSQLschema="false" sqlMaxLimit="100">
+		<!-- auto sharding by id (long) -->
+		<table name="dw_test" dataNode="dn1,dn2" rule="mod-long" primaryKey="id" autoIncrement="true"/>
+	</schema>
+	
+	<dataNode name="dn$1-2" dataHost="localhost1" database="db$1-2" />
+	
+	<dataHost name="localhost1" maxCon="1000" minCon="10" balance="0"
+			  writeType="0" dbType="mysql" dbDriver="native" switchType="1"  slaveThreshold="100">
+		<heartbeat>select user()</heartbeat>
+		<!-- can have multi write hosts -->
+		<writeHost host="hostM1" url="localhost:3306" user="root"
+				   password="123456">
+			<!-- can have multi read hosts
+			<readHost host="hostS2" url="192.168.1.200:3306" user="root" password="xxx" />
+		 -->
+		
+		</writeHost>
+		
+		<!-- 
+		<writeHost host="hostS1" url="localhost:3316" user="root"
+				   password="123456" />
+		<writeHost host="hostM2" url="localhost:3316" user="root" password="123456"/> -->
+	</dataHost>
+	
+</mycat:schema>
